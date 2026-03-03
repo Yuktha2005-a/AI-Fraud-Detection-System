@@ -1,8 +1,9 @@
 import streamlit as st
-import pickle
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
+from ml_model import train_model
+model=train_model()
 
 st.set_page_config(layout="wide")
 
@@ -11,8 +12,6 @@ st.title("💳 AI Fraud Detection Dashboard - Karnataka")
 # =========================
 # LOAD MODEL
 # =========================
-with open("fraud_model.pkl", "rb") as f:
-    model = pickle.load(f)
 
 # =========================
 # KARNATAKA CITIES

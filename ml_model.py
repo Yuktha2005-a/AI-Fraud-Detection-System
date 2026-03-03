@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-import pickle
 import random
 
 # ==========================================
@@ -18,44 +17,41 @@ cities = [
 city_mapping = {city: index for index, city in enumerate(cities)}
 
 # ==========================================
-# Generate Synthetic Training Data
+# TRAIN FUNCTION (IMPORTANT CHANGE)
 # ==========================================
-data = []
+def train_model():
 
-for _ in range(1000):
+    data = []
 
-    city = random.choice(cities)
-    city_code = city_mapping[city]
+    for _ in range(1000):
 
-    amount = random.randint(100, 150000)
-    hour = random.randint(0, 23)
+        city = random.choice(cities)
+        city_code = city_mapping[city]
 
-    # Fraud logic for training
-    fraud = 0
+        amount = random.randint(100, 150000)
+        hour = random.randint(0, 23)
 
-    if amount > 80000:
-        fraud = 1
-    if hour < 4:
-        fraud = 1
-    if amount > 50000 and hour < 6:
-        fraud = 1
+        fraud = 0
 
-    data.append([amount, city_code, hour, fraud])
+        if amount > 80000:
+            fraud = 1
+        if hour < 4:
+            fraud = 1
+        if amount > 50000 and hour < 6:
+            fraud = 1
 
-# Convert to DataFrame
-df = pd.DataFrame(data, columns=["amount", "city_code", "hour", "fraud"])
+        data.append([amount, city_code, hour, fraud])
 
-X = df[["amount", "city_code", "hour"]]
-y = df["fraud"]
+    df = pd.DataFrame(data, columns=["amount", "city_code", "hour", "fraud"])
 
-# Train model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X = df[["amount", "city_code", "hour"]]
+    y = df["fraud"]
 
-model = RandomForestClassifier()
-model.fit(X_train, y_train)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# Save model
-with open("fraud_model.pkl", "wb") as f:
-    pickle.dump(model, f)
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
 
-print("✅ New ML Model Trained Successfully!")
+    return model
